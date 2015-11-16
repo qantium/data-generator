@@ -40,24 +40,50 @@ public class Data {
     public Object[][] get() {
         return data;
     }
-    
+
     public Data(Object[][] data) {
 
         if (ArrayUtils.isEmpty(data)) {
             throw new IllegalArgumentException("Data must have at least one string!");
         }
-        
+
         this.data = data;
+    }
+
+    public Data normalize() {
+        int columnsCount = 0;
+
+        for (Object[] row : data) {
+
+            if (row.length > columnsCount) {
+                columnsCount = row.length;
+            }
+        }
+
+        Object[][] normalizedData = new Object[data.length][];
+
+        for (int i = 0; i < normalizedData.length; i++) {
+
+            List row = new ArrayList();
+            row.addAll(Arrays.asList(data[i]));
+
+            for (int j = 0; j < columnsCount - row.size(); j++) {
+                row.add(null);
+            }
+            normalizedData[i] = row.toArray();
+        }
+
+        return copy(normalizedData);
     }
 
     public Data parceBy(DataParcer... parcers) {
 
         List<DataParcer> parcersList = new ArrayList();
+        parcersList.addAll(Arrays.asList(parcers));
 
         if (ArrayUtils.isEmpty(parcers)) {
             return this;
         } else {
-
             int parcersCount = parcers.length;
             int dataColumnsCount = data[0].length;
 
@@ -67,10 +93,6 @@ public class Data {
                         + "Count of parcers: " + parcersCount + "\n");
             }
 
-            for (DataParcer parcer : parcers) {
-                parcersList.add(parcer);
-            }
-
             if (parcersCount < dataColumnsCount) {
                 DataParcer lastParcer = parcers[parcers.length - 1];
 
@@ -78,43 +100,51 @@ public class Data {
                     parcersList.add(lastParcer);
                 }
             }
-            
+
             Object[][] parcedData = new Object[data.length][];
-            
-            for(int i = 0; i < data.length; i++) {
-                
+
+            for (int i = 0; i < data.length; i++) {
+
                 List parcedRow = new ArrayList();
-                
+
                 for (int j = 0; j < dataColumnsCount; j++) {
                     DataParcer parcer = parcersList.get(j);
                     Object[] parcedCell = parcer.parce(data[i][j]);
                     parcedRow.addAll(Arrays.asList(parcedCell));
                 }
-                
+
                 parcedData[i] = parcedRow.toArray();
             }
-            
-            return new Data(parcedData)
-                    .withHeader(withHeader)
-                    .withTabulation(tabulation)
-                    .replaceNullBy(nullValue);
+
+            return copy(parcedData);
         }
     }
-    
+
+    protected Data copy(Object[][] data) {
+        return new Data(data)
+                .withHeader(withHeader)
+                .withTabulation(tabulation)
+                .replaceNullBy(nullValue);
+    }
+
     public Data withTabulation(boolean tabulation) {
         this.tabulation = tabulation;
 
         if (tabulation && tabulations == null) {
             tabulations = new int[data[0].length];
-            
+
             for (int i = 0; i < data.length; i++) {
 
                 for (int j = 0; j < data[i].length; j++) {
 
-                    int itemLength = data[i][j].toString().length();
+                    Object cell = data[i][j];
 
-                    if (itemLength > tabulations[j]) {
-                        tabulations[j] = itemLength;
+                    if (cell != null) {
+                        int itemLength = data[i][j].toString().length();
+
+                        if (itemLength > tabulations[j]) {
+                            tabulations[j] = itemLength;
+                        }
                     }
                 }
             }
@@ -137,18 +167,22 @@ public class Data {
     }
 
     public Data withHeader(boolean withHeader) {
-        
-        if(this.withHeader != withHeader) {
-            
-            if(!withHeader && header == null) {
+
+        if (this.withHeader != withHeader) {
+
+            if (!withHeader && header == null) {
                 header = data[0];
                 data = ArrayUtils.remove(data, 0);
-            } else if(withHeader && header != null) {
-                ArrayUtils.reverse(data);
-                data = ArrayUtils.add(data, header);
-                ArrayUtils.reverse(data);
+            } else if (withHeader && header != null) {
+                Object[][] newData = new Object[data.length + 1][];
+                newData[0] = header;
+
+                for (int i = 0; i < data.length; i++) {
+                    newData[i + 1] = data[i];
+                }
+                data = newData;
             }
-            
+
             this.withHeader = withHeader;
         }
         return this;

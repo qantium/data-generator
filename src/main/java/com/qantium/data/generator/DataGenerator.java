@@ -62,16 +62,21 @@ public class DataGenerator {
         return generatePairwise(inventory).withHeader(false);
     }
 
+    public static Data generatePairwiseRotatedMatrix(Object[][] data) {
+        IInventory inventory = PairwiseInventoryFactory.generateRotatedMatrixInventory(data);
+        return generatePairwise(inventory).withHeader(false);
+    }
+
     public static Data geberatePairwiseTable(InputStream data) throws IOException {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(data);
         return generatePairwise(inventory);
     }
-    
+
     public static Data generatePairwiseTable(String data) {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(data);
         return generatePairwise(inventory);
     }
-    
+
     public static Data generatePairwiseTable(Object[][] data) {
         IInventory inventory = PairwiseInventoryFactory.generateTableInventory(data);
         return generatePairwise(inventory);
@@ -79,6 +84,16 @@ public class DataGenerator {
 
     public static Data generatePairwiseTable(Object[] names, Object[][] data) {
         IInventory inventory = PairwiseInventoryFactory.generateTableInventory(names, data);
+        return generatePairwise(inventory);
+    }
+
+    public static Data generatePairwiseRotatedTable(Object[][] data) {
+        IInventory inventory = PairwiseInventoryFactory.generateRotatedTableInventory(data);
+        return generatePairwise(inventory);
+    }
+
+    public static Data generatePairwiseRotatedTable(Object[] names, Object[][] data) {
+        IInventory inventory = PairwiseInventoryFactory.generateRotatedTableInventory(names, data);
         return generatePairwise(inventory);
     }
 

@@ -39,7 +39,6 @@ public class TestDataSet {
         } //while loop from hell
     }
 
-    //This is hard-coded for Strings right now--should be able to refactor the generic back in later
     public List<Map<Object, Object>> getTestSets() {
         List<int[]> testSetIndexes = getRawTestSets();
         List<Map<Object, Object>> completeDataSet = new ArrayList();

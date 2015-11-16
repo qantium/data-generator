@@ -17,6 +17,11 @@ public class PairwiseInventoryFactory {
         return generateTableInventory(null, parameters);
     }
 
+    public static IInventory generateRotatedMatrixInventory(Object[][] data) {
+        Object[][] table = getRotatedTable(data);
+        return generateMatrixInventory(table);
+    }
+
     public static IInventory generateTableInventory(Object[][] table) {
 
         if (table.length < 2) {
@@ -29,17 +34,55 @@ public class PairwiseInventoryFactory {
         return generateTableInventory(names, parameters);
     }
 
+    public static IInventory generateRotatedTableInventory(Object[][] data) {
+        Object[][] table = getRotatedTable(data);
+        return generateTableInventory(table);
+    }
+
     public static IInventory generateTableInventory(Object[] names, Object[][] parameters) {
-        
+
         if (ArrayUtils.isEmpty(parameters)) {
             throw new IllegalArgumentException("Parameters table must have at least one string!");
         }
-        
+
         IInventory inventory = new PairwiseInventory();
         Scenario scenario = generateScenario(names, parameters);
         inventory.setScenario(scenario);
         inventory.buildMolecules();
         return inventory;
+    }
+
+    public static IInventory generateRotatedTableInventory(Object[] names, Object[][] data) {
+        Object[][] table = getRotatedTable(data);
+        return generateTableInventory(names, table);
+    }
+
+    public static Object[][] getRotatedTable(Object[][] data) {
+        int maxParameterCount = 0;
+
+        for (Object[] parameters : data) {
+
+            if (parameters.length > maxParameterCount) {
+                maxParameterCount = parameters.length;
+            }
+        }
+
+        Object[][] table = new Object[maxParameterCount][];
+
+        for (int i = 0; i < maxParameterCount; i++) {
+            List row = new ArrayList();
+
+            for (int j = 0; j < data.length; j++) {
+
+                Object[] parameters = data[j];
+
+                if (i < parameters.length) {
+                    row.add(parameters[i]);
+                }
+            }
+            table[i] = row.toArray();
+        }
+        return table;
     }
 
     /**
@@ -59,6 +102,7 @@ public class PairwiseInventoryFactory {
 
     public static Scenario generateScenario(String contents) {
         Scenario scenario = new Scenario();
+
         for (String line : StringUtils.split(contents, System.getProperty("line.separator"))) {
             scenario.addParameterSet(processOneLine(line));
         }
@@ -66,9 +110,9 @@ public class PairwiseInventoryFactory {
     }
 
     public static Scenario generateScenario(Object[] names, Object[][] parameters) {
-        
+
         int parametersCount = 0;
-        
+
         for (Object[] line : parameters) {
 
             if (parametersCount < line.length) {
@@ -107,23 +151,20 @@ public class PairwiseInventoryFactory {
         }
 
         Scenario scenario = new Scenario();
-        
+
         for (int colIndex = 0; colIndex < parametersCount; colIndex++) {
             String name = names[colIndex].toString();
             List parametersSet = new ArrayList();
-            
+
             for (int rowIndex = 0; rowIndex < parameters.length; rowIndex++) {
-                
+
                 Object[] row = parameters[rowIndex];
                 Object parameter;
-                
-                if(colIndex < row.length) {
+
+                if (colIndex < row.length) {
                     parameter = row[colIndex];
-                } else {
-                    parameter = null;   
+                    parametersSet.add(parameter);
                 }
-                
-                parametersSet.add(parameter);
             }
             scenario.addParameterSet(process(name, parametersSet));
         }
