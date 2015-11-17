@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.qantium.data.generator;
+package com.qantium.data;
 
-import com.qantium.data.pairwise.IInventory;
-import com.qantium.data.pairwise.PairwiseInventoryFactory;
+import com.qantium.pairwise.IInventory;
+import com.qantium.pairwise.PairwiseInventoryFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

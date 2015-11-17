@@ -1,4 +1,4 @@
-package com.qantium.data.pairwise;
+package com.qantium.pairwise;
 
 import java.util.*;
 

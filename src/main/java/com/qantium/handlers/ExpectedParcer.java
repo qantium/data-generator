@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.qantium.data.parcers;
+package com.qantium.handlers;
 
 /**
  *
@@ -24,5 +24,8 @@ public class ExpectedParcer extends RegexpParcer {
     public ExpectedParcer() {
         super("VALUE\\[(.*)\\]\\s*EXPECTED\\[(.*)\\]");
     }
-    
+
+    public ExpectedParcer(String regexp) {
+        super(regexp);
+    } 
 }

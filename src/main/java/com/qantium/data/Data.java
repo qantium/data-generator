@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.qantium.data.generator;
+package com.qantium.data;
 
-import com.qantium.data.parcers.DataParcer;
+import com.qantium.handlers.DataHandler;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -76,47 +76,47 @@ public class Data {
         return copy(normalizedData);
     }
 
-    public Data parceBy(DataParcer... parcers) {
+    public Data handleBy(DataHandler... handlers) {
 
-        List<DataParcer> parcersList = new ArrayList();
-        parcersList.addAll(Arrays.asList(parcers));
+        List<DataHandler> handlerList = new ArrayList();
+        handlerList.addAll(Arrays.asList(handlers));
 
-        if (ArrayUtils.isEmpty(parcers)) {
+        if (ArrayUtils.isEmpty(handlers)) {
             return this;
         } else {
-            int parcersCount = parcers.length;
+            int handlersCount = handlers.length;
             int dataColumnsCount = data[0].length;
 
-            if (parcersCount > dataColumnsCount) {
-                throw new IllegalArgumentException("Count of parcers must be equal or less than count of data columns!\n"
+            if (handlersCount > dataColumnsCount) {
+                throw new IllegalArgumentException("Count of handlers must be equal or less than count of data columns!\n"
                         + "Count of data columns: " + dataColumnsCount + "\n"
-                        + "Count of parcers: " + parcersCount + "\n");
+                        + "Count of handlers: " + handlersCount + "\n");
             }
 
-            if (parcersCount < dataColumnsCount) {
-                DataParcer lastParcer = parcers[parcers.length - 1];
+            if (handlersCount < dataColumnsCount) {
+                DataHandler lastHandle = handlers[handlers.length - 1];
 
-                for (int i = 0; i < dataColumnsCount - parcersCount; i++) {
-                    parcersList.add(lastParcer);
+                for (int i = 0; i < dataColumnsCount - handlersCount; i++) {
+                    handlerList.add(lastHandle);
                 }
             }
 
-            Object[][] parcedData = new Object[data.length][];
+            Object[][] handledData = new Object[data.length][];
 
             for (int i = 0; i < data.length; i++) {
 
-                List parcedRow = new ArrayList();
+                List handledRow = new ArrayList();
 
                 for (int j = 0; j < dataColumnsCount; j++) {
-                    DataParcer parcer = parcersList.get(j);
-                    Object[] parcedCell = parcer.parce(data[i][j]);
-                    parcedRow.addAll(Arrays.asList(parcedCell));
+                    DataHandler handler = handlerList.get(j);
+                    Object[] handledCell = handler.handle(data[i][j]);
+                    handledRow.addAll(Arrays.asList(handledCell));
                 }
 
-                parcedData[i] = parcedRow.toArray();
+                handledData[i] = handledRow.toArray();
             }
 
-            return copy(parcedData);
+            return copy(handledData);
         }
     }
 

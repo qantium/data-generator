@@ -1,4 +1,4 @@
-package com.qantium.data.pairwise;
+package com.qantium.pairwise;
 
 import org.apache.commons.lang3.StringUtils;
 

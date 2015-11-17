@@ -1,4 +1,4 @@
-package com.qantium.data.pairwise;
+package com.qantium.pairwise;
 
 import java.util.Arrays;
 
@@ -9,6 +9,9 @@ import java.util.Arrays;
  * @author mmerrell
  */
 public class Molecule {
+    
+    private int[] atoms;
+    public int[] getAtoms() { return atoms; }
     /**
      * Initializes a new Molecule, which has an array of indexes to the "larger" scenario
      * @param atoms
@@ -29,8 +32,7 @@ public class Molecule {
     public int getAtomsPerMolecule() { return atomsPerMolecule; }
     public void setAtomsPerMolecule(int atomsPerMolecule) { this.atomsPerMolecule = atomsPerMolecule; }
 
-    private int[] atoms;
-    public int[] getAtoms() { return atoms; }
+
     
     public void setAtoms(int[] atoms) {
         this.atoms = atoms;

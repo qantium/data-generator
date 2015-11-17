@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.qantium.data.parcers;
+package com.qantium.handlers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  *
  * @author A.Solyankin
  */
-public class RegexpParcer implements DataParcer {
+public class RegexpParcer implements DataHandler {
 
     private final String regexp;
 
@@ -35,11 +35,11 @@ public class RegexpParcer implements DataParcer {
     }
     
     public static <T> T[] parce(String regexp, T data) {
-        return new RegexpParcer(regexp).parce(data);
+        return new RegexpParcer(regexp).handle(data);
     }
 
     @Override
-    public <T> T[] parce(T data) {
+    public <T> T[] handle(T data) {
         Pattern pattern = Pattern.compile(regexp);
         Matcher matcher = pattern.matcher(data.toString());
         
