@@ -136,7 +136,6 @@ public class Data {
             for (int i = 0; i < data.length; i++) {
 
                 for (int j = 0; j < data[i].length; j++) {
-
                     Object cell = data[i][j];
 
                     if (cell != null) {
